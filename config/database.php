@@ -4,7 +4,7 @@ return [
     'host' => $_ENV['DB_HOST'] ?? 'localhost',
     'database' => $_ENV['DB_NAME'] ?? 'url_shortener',
     'username' => $_ENV['DB_USER'] ?? 'root',
-    'password' => $_ENV['DB_PASS'] ?? '',
+    'password' => $_ENV['DB_PASS'] ?? 'Mos@21311',
     'charset' => 'utf8mb4',
     'options' => [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
