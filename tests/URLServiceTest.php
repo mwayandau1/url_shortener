@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../src/Database.php';
 require_once __DIR__ . '/../src/URLShortener.php';
 require_once __DIR__ . '/../src/URLService.php';
+require_once __DIR__ . '/../src/EnvLoader.php';
 
 class URLServiceTest
 {
@@ -11,12 +12,15 @@ class URLServiceTest
 
     public function __construct()
     {
-        // Use test database configuration
+        // Load environment variables
+        EnvLoader::load(__DIR__ . '/../.env');
+        
+        // Use configuration from .env
         $config = [
-            'host' => 'localhost',
-            'database' => 'url_shortener',
-            'username' => 'root',
-            'password' => 'Mos@21311',
+            'host' => $_ENV['DB_HOST'] ?? 'localhost',
+            'database' => $_ENV['DB_NAME'] ?? 'url_shortener',
+            'username' => $_ENV['DB_USER'] ?? 'root',
+            'password' => $_ENV['DB_PASS'] ?? '',
             'charset' => 'utf8mb4',
             'options' => [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
