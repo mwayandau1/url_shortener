@@ -1,6 +1,5 @@
 # URL Shortener Service
 
-A simple URL shortening service built with raw PHP and MySQL, similar to TinyURL or bit.ly.
 
 ## 🚀 Quick Start
 
