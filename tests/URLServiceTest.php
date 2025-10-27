@@ -12,10 +12,8 @@ class URLServiceTest
 
     public function __construct()
     {
-        // Load environment variables
         EnvLoader::load(__DIR__ . '/../.env');
         
-        // Use configuration from .env
         $config = [
             'host' => $_ENV['DB_HOST'] ?? 'localhost',
             'database' => $_ENV['DB_NAME'] ?? 'url_shortener',
@@ -105,7 +103,8 @@ class URLServiceTest
         if (!$this->db) return;
 
         try {
-            $this->urlService->decodeURL('http://shrt.est/nonexistent');
+            $baseUrl = $_ENV['BASE_URL'] ?? 'http://localhost/url-shortener';
+            $this->urlService->decodeURL($baseUrl . '/nonexistent');
             throw new Exception('Should have thrown Exception');
         } catch (Exception $e) {
             if ($e->getMessage() === 'Should have thrown Exception') {

@@ -56,13 +56,17 @@ class URLShortener
     }
 
     /**
-     * Generate a hash for a URL
+     * Generate a random short code
      * 
-     * @param string $url The URL to hash
-     * @return string 8-character hash
+     * @param int $length Length of the short code
+     * @return string Random short code
      */
-    public function generateHash(string $url): string
+    public function generateShortCode(int $length = 4): string
     {
-        return substr(md5($url . microtime(true)), 0, 8);
+        $shortCode = '';
+        for ($i = 0; $i < $length; $i++) {
+            $shortCode .= self::ALPHABET[random_int(0, self::BASE - 1)];
+        }
+        return $shortCode;
     }
 }

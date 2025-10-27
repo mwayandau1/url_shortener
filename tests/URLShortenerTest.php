@@ -56,17 +56,16 @@ class URLShortenerTest
         }
     }
 
-    public function testGenerateHash(): void
+    public function testGenerateShortCode(): void
     {
-        $url = 'https://example.com';
-        $hash1 = $this->shortener->generateHash($url);
-        usleep(1000); // Ensure different timestamp
-        $hash2 = $this->shortener->generateHash($url);
+        $code1 = $this->shortener->generateShortCode();
+        $code2 = $this->shortener->generateShortCode();
         
-        $this->assertEquals(8, strlen($hash1));
-        $this->assertNotEquals($hash1, $hash2); // Should be different due to time component
+        $this->assertEquals(4, strlen($code1));
+        $this->assertEquals(4, strlen($code2));
+        $this->assertNotEquals($code1, $code2);
         
-        echo "✓ Generate hash tests passed\n";
+        echo "✓ Generate short code tests passed\n";
     }
 
     private function assertEquals($expected, $actual): void
@@ -90,7 +89,7 @@ class URLShortenerTest
         $this->testDecode();
         $this->testEncodeDecodeConsistency();
         $this->testInvalidCharacterThrowsException();
-        $this->testGenerateHash();
+        $this->testGenerateShortCode();
         echo "All URLShortener tests passed!\n\n";
     }
 }

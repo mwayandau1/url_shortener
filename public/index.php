@@ -19,7 +19,7 @@ require_once __DIR__ . '/../src/Database.php';
 require_once __DIR__ . '/../src/URLShortener.php';
 require_once __DIR__ . '/../src/URLService.php';
 
-header('Content-Type: application/json');
+
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
@@ -39,11 +39,45 @@ try {
     $path = parse_url($requestUri, PHP_URL_PATH);
     $method = $_SERVER['REQUEST_METHOD'];
 
+
+    $basePath = '/url-shortener/public';
+    if (strpos($path, $basePath) === 0) {
+        $path = substr($path, strlen($basePath));
+    }
     $pathParts = explode('/', trim($path, '/'));
-    $endpoint = end($pathParts);
+    $endpoint = $pathParts[0] ?? '';
+
+
+    if (preg_match('/^[a-zA-Z0-9]+$/', $endpoint) && strlen($endpoint) <= 10 && $method === 'GET' && $endpoint !== 'encode' && $endpoint !== 'decode') {
+        try {
+            $result = $db->fetchOne(
+                'SELECT original_url FROM urls WHERE short_code = ?',
+                [$endpoint]
+            );
+            
+            if ($result) {
+                $db->query(
+                    'UPDATE urls SET access_count = access_count + 1, last_accessed = ? WHERE short_code = ?',
+                    [date('Y-m-d H:i:s'), $endpoint]
+                );
+                
+                header('Location: ' . $result['original_url']);
+                exit;
+            } else {
+                http_response_code(404);
+                echo '<h1>404 - Short URL not found</h1>';
+                exit;
+            }
+        } catch (Exception $e) {
+            http_response_code(404);
+            echo '<h1>404 - Short URL not found</h1>';
+            exit;
+        }
+    }
 
     switch ($endpoint) {
         case 'encode':
+            header('Content-Type: application/json');
             if ($method !== 'POST') {
                 throw new Exception('Method not allowed', 405);
             }
@@ -62,6 +96,7 @@ try {
             break;
 
         case 'decode':
+            header('Content-Type: application/json');
             if ($method !== 'POST') {
                 throw new Exception('Method not allowed', 405);
             }
@@ -80,6 +115,7 @@ try {
             break;
 
         default:
+            header('Content-Type: application/json');
             echo json_encode([
                 'success' => true,
                 'message' => 'URL Shortener API',
@@ -91,12 +127,14 @@ try {
     }
 
 } catch (InvalidArgumentException $e) {
+    header('Content-Type: application/json');
     http_response_code(400);
     echo json_encode([
         'success' => false,
         'error' => $e->getMessage()
     ]);
 } catch (Exception $e) {
+    header('Content-Type: application/json');
     $code = $e->getCode() ?: 500;
     http_response_code($code);
     echo json_encode([

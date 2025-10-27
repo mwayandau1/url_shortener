@@ -2,7 +2,6 @@
 
 require_once __DIR__ . '/../src/EnvLoader.php';
 
-// Load environment variables
 EnvLoader::load(__DIR__ . '/../.env');
 
 return [
