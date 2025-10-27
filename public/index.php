@@ -18,6 +18,7 @@
 require_once __DIR__ . '/../src/Database.php';
 require_once __DIR__ . '/../src/URLShortener.php';
 require_once __DIR__ . '/../src/URLService.php';
+require_once __DIR__ . '/../src/UrlHelper.php';
 
 
 header('Access-Control-Allow-Origin: *');
@@ -40,12 +41,7 @@ try {
     $method = $_SERVER['REQUEST_METHOD'];
 
 
-    $basePath = '/url-shortener/public';
-    if (strpos($path, $basePath) === 0) {
-        $path = substr($path, strlen($basePath));
-    }
-    $pathParts = explode('/', trim($path, '/'));
-    $endpoint = $pathParts[0] ?? '';
+    $endpoint = UrlHelper::extractPathSegment($requestUri);
 
 
     if (preg_match('/^[a-zA-Z0-9]+$/', $endpoint) && strlen($endpoint) <= 10 && $method === 'GET' && $endpoint !== 'encode' && $endpoint !== 'decode') {

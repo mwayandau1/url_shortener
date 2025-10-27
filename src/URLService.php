@@ -125,7 +125,16 @@ class URLService
      */
     private function buildShortUrl(string $shortCode): string
     {
-        $baseUrl = $_ENV['BASE_URL'] ?? 'http://shrt.est';
+        require_once __DIR__ . '/UrlHelper.php';
+        $baseUrl = $_ENV['BASE_URL'];
+        if (empty($baseUrl)) {
+            $baseUrl = UrlHelper::getBaseUrl();
+        }
+        if (empty($baseUrl) || $baseUrl[0] === '/') {
+            $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+            $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+            $baseUrl = $protocol . '://' . $host . rtrim(dirname($_SERVER['REQUEST_URI'] ?? ''), '/');
+        }
         return rtrim($baseUrl, '/') . '/' . $shortCode;
     }
 
@@ -137,18 +146,19 @@ class URLService
      */
     private function extractShortCode(string $shortUrl): string
     {
-
         if (filter_var($shortUrl, FILTER_VALIDATE_URL)) {
             $parts = parse_url($shortUrl);
             $path = ltrim($parts['path'] ?? '', '/');
-
-            $basePath = 'url-shortener/public';
-            if (strpos($path, $basePath) === 0) {
+            
+            $scriptName = $_SERVER['SCRIPT_NAME'] ?? '';
+            $basePath = trim(dirname($scriptName), '/');
+            
+            if ($basePath && strpos($path, $basePath) === 0) {
                 $path = substr($path, strlen($basePath));
             }
+            
             return ltrim($path, '/');
         }
-
         return $shortUrl;
     }
 }
