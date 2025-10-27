@@ -46,24 +46,24 @@ class URLService
             ];
         }
 
+        // Generate unique short code
+        do {
+            $shortCode = $this->shortener->generateShortCode();
+            $exists = $this->db->fetchOne(
+                'SELECT id FROM urls WHERE short_code = ?',
+                [$shortCode]
+            );
+        } while ($exists);
+
+        // Insert new URL with short code
         $id = $this->db->insert('urls', [
             'original_url' => $originalUrl,
+            'short_code' => $shortCode,
             'created_at' => date('Y-m-d H:i:s')
         ]);
 
         if (!$id) {
             throw new Exception('Failed to insert URL into database');
-        }
-
-        $shortCode = $this->shortener->encode($id);
-        
-        $result = $this->db->query(
-            'UPDATE urls SET short_code = ? WHERE id = ?',
-            [$shortCode, $id]
-        );
-
-        if (!$result) {
-            throw new Exception('Failed to update short code');
         }
 
         return [
@@ -139,7 +139,18 @@ class URLService
      */
     private function extractShortCode(string $shortUrl): string
     {
-        $parts = parse_url($shortUrl);
-        return ltrim($parts['path'] ?? '', '/');
+
+        if (filter_var($shortUrl, FILTER_VALIDATE_URL)) {
+            $parts = parse_url($shortUrl);
+            $path = ltrim($parts['path'] ?? '', '/');
+
+            $basePath = 'url-shortener/public';
+            if (strpos($path, $basePath) === 0) {
+                $path = substr($path, strlen($basePath));
+            }
+            return ltrim($path, '/');
+        }
+
+        return $shortUrl;
     }
 }
