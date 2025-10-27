@@ -46,7 +46,6 @@ class URLService
             ];
         }
 
-        // Generate unique short code
         do {
             $shortCode = $this->shortener->generateShortCode();
             $exists = $this->db->fetchOne(
@@ -55,7 +54,6 @@ class URLService
             );
         } while ($exists);
 
-        // Insert new URL with short code
         $id = $this->db->insert('urls', [
             'original_url' => $originalUrl,
             'short_code' => $shortCode,

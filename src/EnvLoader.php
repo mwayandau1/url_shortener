@@ -1,7 +1,16 @@
 <?php
 
+/**
+ * Environment variable loader for .env files
+ */
 class EnvLoader
 {
+    /**
+     * Load environment variables from a .env file
+     * 
+     * @param string $path Path to the .env file
+     * @return void
+     */
     public static function load(string $path): void
     {
         if (!file_exists($path)) {
