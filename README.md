@@ -20,29 +20,30 @@
    - Restart Apache
 
 4. **Access Application**
-   - API: `http://localhost/url-shortener/public/`
-   - Tests: `http://localhost/url-shortener/public/test.php`
+   - API: Auto-detects your server setup
+   - Tests: `http://your-server/path-to-project/public/test.php`
+   - Works with any Apache setup (XAMPP, WAMP, LAMP)
 
 ## 📡 API Usage
 
 ### Shorten URL
 ```bash
-curl -X POST http://localhost/url-shortener/public/encode \
+curl -X POST http://your-server/path-to-project/public/encode \
   -H "Content-Type: application/json" \
   -d '{"url":"https://example.com"}'
 ```
 
 ### Visit Short URL
 ```
-http://localhost/url-shortener/public/ABC4
+http://your-server/path-to-project/public/ABC4
 # Automatically redirects to original URL
 ```
 
 ### Decode URL
 ```bash
-curl -X POST http://localhost/url-shortener/public/decode \
+curl -X POST http://your-server/path-to-project/public/decode \
   -H "Content-Type: application/json" \
-  -d '{"short_url":"http://localhost/url-shortener/public/ABC4"}'
+  -d '{"short_url":"http://your-server/path-to-project/public/ABC4"}'
 ```
 
 ## 🏗️ Architecture
@@ -51,6 +52,7 @@ curl -X POST http://localhost/url-shortener/public/decode \
 - **Custom Database Class** - PDO wrapper
 - **Base62 Encoding** - Random 4-character codes
 - **Object-Oriented Design** - Clean separation of concerns
+- **Auto-Detection** - Works with any server setup automatically
 
 ## 📁 Project Structure
 
@@ -67,8 +69,10 @@ url-shortener/
 
 Run comprehensive test suite:
 ```
-http://localhost/url-shortener/public/test.php
+http://your-server/path-to-project/public/test.php
 ```
+
+The system auto-detects your server configuration.
 
 ## 📚 Documentation
 
@@ -82,3 +86,5 @@ See [DOCUMENTATION.md](DOCUMENTATION.md) for detailed technical documentation.
 - ✅ Access tracking
 - ✅ Comprehensive tests
 - ✅ Clean OOP design
+- ✅ Auto-detects server setup
+- ✅ Works with any Apache configuration

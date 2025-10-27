@@ -39,7 +39,6 @@ DB_HOST=localhost
 DB_NAME=url_shortener
 DB_USER=root
 DB_PASS=your_password
-BASE_URL=http://localhost/url-shortener
 ```
 
 ### 5. Web Server Configuration
@@ -50,14 +49,14 @@ BASE_URL=http://localhost/url-shortener
 ## Running the Application
 
 ### Access URLs
-- **API Base**: `http://localhost/url-shortener/public/`
-- **Encode Endpoint**: `http://localhost/url-shortener/public/encode`
-- **Decode Endpoint**: `http://localhost/url-shortener/public/decode`
+- **API Base**: Auto-detected based on your server setup
+- **Encode Endpoint**: `http://your-server/path-to-project/public/encode`
+- **Decode Endpoint**: `http://your-server/path-to-project/public/decode`
 
 ### Testing
 Run the test suite by visiting:
 ```
-http://localhost/url-shortener/public/test.php
+http://your-server/path-to-project/public/test.php
 ```
 
 ## API Endpoints
@@ -75,11 +74,11 @@ Encodes a URL to a shortened URL.
 **Response:**
 ```json
 {
-    "success": true,
-    "data": {
-        "short_url": "http://shrt.est/ZeAK",
-        "original_url": "https://sommalife.com/impact/"
-    }
+  "success": true,
+  "data": {
+    "short_url": "http://localhost/url-shortener/public/V3AG",
+    "original_url": "https://sommalife.com/impact/"
+  }
 }
 ```
 
@@ -89,18 +88,18 @@ Decodes a shortened URL to its original URL.
 **Request:**
 ```json
 {
-    "short_url": "http://shrt.est/ZeAK"
+  "original_url": "https://sommalife.com/impact/"
 }
 ```
 
 **Response:**
 ```json
 {
-    "success": true,
-    "data": {
-        "original_url": "https://sommalife.com/impact/",
-        "short_url": "http://shrt.est/ZeAK"
-    }
+  "success": true,
+  "data": {
+    "original_url": "https://sommalife.com/impact/",
+    "short_url": "http://localhost/url-shortener/public/V3AG"
+  }
 }
 ```
 
@@ -180,6 +179,23 @@ The application includes comprehensive tests:
 
 Run tests via web interface for best compatibility with XAMPP environments.
 
+## Server Compatibility
+
+The system automatically detects and works with:
+
+- **XAMPP**: `http://localhost/project-folder/public/ABC4`
+- **WAMP**: `http://localhost/project-folder/public/ABC4`
+- **LAMP**: `http://server/project-folder/public/ABC4`
+- **Document Root**: `http://domain.com/ABC4`
+- **Subdirectories**: `http://domain.com/any/path/ABC4`
+- **Custom Domains**: `https://short.ly/ABC4`
+
+**Auto-Detection Features:**
+- Detects HTTP/HTTPS automatically
+- Handles any directory structure
+- Works with virtual hosts
+- No manual configuration required
+
 ## Production Considerations
 
 - Input validation and sanitization
@@ -188,3 +204,4 @@ Run tests via web interface for best compatibility with XAMPP environments.
 - Proper error handling and logging
 - Database indexing for performance
 - Access tracking and analytics
+- Automatic server configuration detection
