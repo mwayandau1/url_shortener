@@ -1,10 +1,19 @@
 <?php
 
+/**
+ * URL Shortener class for encoding and decoding URLs using base62 encoding
+ */
 class URLShortener
 {
     private const ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     private const BASE = 62;
 
+    /**
+     * Encode an integer ID to a short string using base62
+     * 
+     * @param int $id The ID to encode
+     * @return string The encoded short string
+     */
     public function encode(int $id): string
     {
         if ($id === 0) {
@@ -20,6 +29,13 @@ class URLShortener
         return $shortUrl;
     }
 
+    /**
+     * Decode a short string back to its original integer ID
+     * 
+     * @param string $shortUrl The short string to decode
+     * @return int The decoded ID
+     * @throws InvalidArgumentException If invalid character found
+     */
     public function decode(string $shortUrl): int
     {
         $id = 0;
@@ -39,6 +55,12 @@ class URLShortener
         return $id;
     }
 
+    /**
+     * Generate a hash for a URL
+     * 
+     * @param string $url The URL to hash
+     * @return string 8-character hash
+     */
     public function generateHash(string $url): string
     {
         return substr(md5($url . microtime(true)), 0, 8);

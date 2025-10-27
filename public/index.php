@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * URL Shortener API Entry Point
+ * 
+ * This file serves as the main API endpoint for the URL shortener service.
+ * It handles HTTP requests for encoding and decoding URLs.
+ * 
+ * Endpoints:
+ * - POST /encode: Shortens a given URL
+ * - POST /decode: Retrieves original URL from short URL
+ * - GET /: Returns API information
+ * 
+ * @author mosesayandau
+ * @version 1.0
+ */
+
 require_once __DIR__ . '/../src/Database.php';
 require_once __DIR__ . '/../src/URLShortener.php';
 require_once __DIR__ . '/../src/URLService.php';
@@ -24,7 +39,6 @@ try {
     $path = parse_url($requestUri, PHP_URL_PATH);
     $method = $_SERVER['REQUEST_METHOD'];
 
-    // Extract the endpoint from the path
     $pathParts = explode('/', trim($path, '/'));
     $endpoint = end($pathParts);
 
