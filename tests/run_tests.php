@@ -1,5 +1,10 @@
 <?php
 
+require_once __DIR__ . '/../src/EnvLoader.php';
+
+// Load environment variables for tests
+EnvLoader::load(__DIR__ . '/../.env');
+
 require_once __DIR__ . '/URLShortenerTest.php';
 require_once __DIR__ . '/URLServiceTest.php';
 

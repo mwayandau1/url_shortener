@@ -1,10 +1,15 @@
 <?php
 
+require_once __DIR__ . '/../src/EnvLoader.php';
+
+// Load environment variables
+EnvLoader::load(__DIR__ . '/../.env');
+
 return [
     'host' => $_ENV['DB_HOST'] ?? 'localhost',
     'database' => $_ENV['DB_NAME'] ?? 'url_shortener',
     'username' => $_ENV['DB_USER'] ?? 'root',
-    'password' => $_ENV['DB_PASS'] ?? 'Mos@21311',
+    'password' => $_ENV['DB_PASS'] ?? '',
     'charset' => 'utf8mb4',
     'options' => [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
