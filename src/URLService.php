@@ -80,6 +80,10 @@ class URLService
      */
     public function decodeURL(string $shortUrl): array
     {
+        if (!$this->isValidShortUrl($shortUrl)) {
+            throw new InvalidArgumentException('Invalid short URL format');
+        }
+        
         $shortCode = $this->extractShortCode($shortUrl);
         
         if (empty($shortCode)) {
@@ -114,7 +118,20 @@ class URLService
      */
     private function isValidUrl(string $url): bool
     {
-        return filter_var($url, FILTER_VALIDATE_URL) !== false;
+        if (filter_var($url, FILTER_VALIDATE_URL) === false) {
+            return false;
+        }
+        
+        $parsed = parse_url($url);
+        if (!isset($parsed['scheme']) || !in_array($parsed['scheme'], ['http', 'https'])) {
+            return false;
+        }
+        
+        if (!isset($parsed['host']) || empty($parsed['host'])) {
+            return false;
+        }
+        
+        return true;
     }
 
     /**
@@ -125,17 +142,35 @@ class URLService
      */
     private function buildShortUrl(string $shortCode): string
     {
-        require_once __DIR__ . '/UrlHelper.php';
-        $baseUrl = $_ENV['BASE_URL'];
-        if (empty($baseUrl)) {
-            $baseUrl = UrlHelper::getBaseUrl();
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+        $scriptPath = dirname($_SERVER['SCRIPT_NAME'] ?? '');
+        $baseUrl = $protocol . '://' . $host . rtrim($scriptPath, '/');
+        return $baseUrl . '/' . $shortCode;
+    }
+
+    /**
+     * Validate if a short URL is properly formatted
+     * 
+     * @param string $shortUrl Short URL to validate
+     * @return bool True if valid, false otherwise
+     */
+    private function isValidShortUrl(string $shortUrl): bool
+    {
+        if (filter_var($shortUrl, FILTER_VALIDATE_URL) === false) {
+            return false;
         }
-        if (empty($baseUrl) || $baseUrl[0] === '/') {
-            $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-            $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-            $baseUrl = $protocol . '://' . $host . rtrim(dirname($_SERVER['REQUEST_URI'] ?? ''), '/');
+        
+        $parsed = parse_url($shortUrl);
+        if (!isset($parsed['scheme']) || !in_array($parsed['scheme'], ['http', 'https'])) {
+            return false;
         }
-        return rtrim($baseUrl, '/') . '/' . $shortCode;
+        
+        if (!isset($parsed['host']) || empty($parsed['host'])) {
+            return false;
+        }
+        
+        return true;
     }
 
     /**
