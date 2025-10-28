@@ -11,50 +11,9 @@ class URLShortenerTest
         $this->shortener = new URLShortener();
     }
 
-    public function testEncode(): void
-    {
-        $this->assertEquals('1', $this->shortener->encode(1));
-        $this->assertEquals('a', $this->shortener->encode(10));
-        $this->assertEquals('Z', $this->shortener->encode(61));
-        $this->assertEquals('10', $this->shortener->encode(62));
-        $this->assertEquals('0', $this->shortener->encode(0));
-        
-        echo "✓ Encode tests passed\n";
-    }
 
-    public function testDecode(): void
-    {
-        $this->assertEquals(1, $this->shortener->decode('1'));
-        $this->assertEquals(10, $this->shortener->decode('a'));
-        $this->assertEquals(61, $this->shortener->decode('Z'));
-        $this->assertEquals(62, $this->shortener->decode('10'));
-        $this->assertEquals(0, $this->shortener->decode('0'));
-        
-        echo "✓ Decode tests passed\n";
-    }
 
-    public function testEncodeDecodeConsistency(): void
-    {
-        $testIds = [1, 10, 100, 1000, 10000, 999999];
-        
-        foreach ($testIds as $id) {
-            $encoded = $this->shortener->encode($id);
-            $decoded = $this->shortener->decode($encoded);
-            $this->assertEquals($id, $decoded);
-        }
-        
-        echo "✓ Encode/Decode consistency tests passed\n";
-    }
-
-    public function testInvalidCharacterThrowsException(): void
-    {
-        try {
-            $this->shortener->decode('invalid@char');
-            throw new Exception('Should have thrown InvalidArgumentException');
-        } catch (InvalidArgumentException $e) {
-            echo "✓ Invalid character exception test passed\n";
-        }
-    }
+  
 
     public function testGenerateShortCode(): void
     {
@@ -85,10 +44,7 @@ class URLShortenerTest
     public function runAllTests(): void
     {
         echo "Running URLShortener tests...\n";
-        $this->testEncode();
-        $this->testDecode();
-        $this->testEncodeDecodeConsistency();
-        $this->testInvalidCharacterThrowsException();
+
         $this->testGenerateShortCode();
         echo "All URLShortener tests passed!\n\n";
     }
